@@ -1,0 +1,51 @@
+#+title: A waf tool for org mode export
+
+Copy [[file:org.py]] to a tool directory and load as usual:
+
+#+begin_src python
+  def configure(cfg):
+      cfg.load("org", tooldir=".")
+
+  def build(bld):
+      bld.load("org", tooldir=".")
+#+end_src
+
+Org source files may then be registered for export:
+
+#+begin_src python
+  bld(features="org2html org2pdf", source="myfile.org")
+#+end_src
+
+The output file will be named after the source file unless a target is
+given:
+
+#+begin_src python
+    bld(features="org2html org2pdf", source="myfile.org",
+        target="myfile-different-name.pdf")
+#+end_src
+
+The target normally will be placed in the build directory but may be
+placed in the source.
+
+#+begin_src python
+  a = bld.path.find_resource("a.org")
+  ahtml = a.parent.make_node("a.html")
+  bld(features="org2html", source=a, target=ahtml)
+#+end_src
+
+The target file name will overrule but otherwise be compatible with
+an org source that specifies an export file name.
+
+#+begin_example
+  #+export_file_name: another-name
+#+end_example
+  
+An org source file is scanned so that ~#+include:~ lines add
+dependencies on the included files.
+
+Emacs is used to perform the export.  The ~emacs~ program will be
+located.  To use a specific Emacs:
+
+#+begin_example
+  $ EMACS=/path/to/your/bin/emacs waf configure
+#+end_example

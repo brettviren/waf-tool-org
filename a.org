@@ -1,0 +1,7 @@
+#+export_file_name: ab
+
+* A
+
+AAA
+
+#+include: b.org
